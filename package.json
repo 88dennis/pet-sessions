@@ -2,6 +2,7 @@
   "name": "sessions",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://88dennis.github.io/pet-sessions",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -18,6 +19,8 @@
     "react-scripts": "3.4.1"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
