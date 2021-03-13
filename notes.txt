@@ -1,0 +1,112 @@
+import React, { Component } from 'react';
+import '../css/App.css';
+import AddAppointments from './AddAppointments';
+import ListAppointments from './ListAppointments';
+import SearchAppointments from './SearchAppointments';
+
+
+class  App extends Component {
+
+  constructor(){
+    super();
+
+    this.state = {
+      myAppointments: []
+    }
+  }
+
+  componentDidMount(){
+    fetch('./data.json')
+      .then(response => response.json())
+      .then(result => {
+        const apts = result.map(item => {
+          return item;
+        })
+        this.setState({
+          myAppointments: apts
+        });
+      })
+
+  }
+
+  render(){
+
+    const listItem = this.state.myAppointments.map((item, index)=> {
+      return (
+        
+        <div key={index+1}>
+            <span>{item.petName}</span>
+            <span>{item.ownerName}</span>
+
+            {/* {item.arrPets.map((petNo, key) => {
+              return (
+              <p key={key}>{petNo}</p>
+           )
+              })
+           } */}
+            
+        </div>
+        
+      )
+    });
+
+    return (
+      <main className="page bg-white" id="petratings">
+          <div className="container">
+            <div className="row">
+              <div className="col-md-12 bg-white">
+                <div className="container">
+                  {listItem}
+                  {this.state.myName}
+    
+                   <AddAppointments
+                    // formDisplay={this.state.formDisplay}
+                    // toggleForm={this.toggleForm}
+                    // addAppointment={this.addAppointment}
+                  /> 
+
+                   <SearchAppointments
+                    // orderBy={this.state.orderBy}
+                    // orderDir={this.state.orderDir}
+                    // changeOrder={this.changeOrder}
+                    // searchApts={this.searchApts}
+                  />
+                  <ListAppointments
+                    // appointments={filteredApts}
+                    // deleteAppointment={this.deleteAppointment}
+                    // updateInfo={this.updateInfo}
+                  /> 
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+    );
+  }
+ 
+}
+
+export default App;
+
+
+===========================
+
+
+react-icons.netlify
+
+npm install —save bootstrap react-icons lodash jquery popper.js
+npm install --save moment react-moment
+
+in index.js
+import 'jquery/dist/jquery.js';
+import 'popper.js/dist/umd/popper.js';
+import 'bootstrap/dist/js/bootstrap.js';
+
+
+=======
+ADDING A className
+=====
+className={
+          'card textcenter mt-3 ' +
+          (this.props.formDisplay ? '' : 'add-appointment')
+        }
