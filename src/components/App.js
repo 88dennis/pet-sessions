@@ -1,155 +1,146 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react'
 import '../css/App.css';
 import AddAppointments from './AddAppointments';
 import ListAppointments from './ListAppointments';
 import SearchAppointments from './SearchAppointments';
-// import {findIndex} from 'lodash';
+import data from '../data.json';
 
-class  App extends Component {
-  constructor(){
-    super();
-
-    this.state = {
-      myAppointments: [],
-      lastIndex: 1,
-      orderBy: 'petName',
-      orderDir: 'asc',
-      formDisplay: false,
-      petNameRecord:"",
-      queryText:""
-    }
-
-    this.deleteAppointment = this.deleteAppointment.bind(this);
-    this.toggleForm = this.toggleForm.bind(this);
-    this.addAppointment = this.addAppointment.bind(this);
-    this.changeOrder = this.changeOrder.bind(this);
-    this.showRecord = this.showRecord.bind(this);
-    this.viewAll = this.viewAll.bind(this);
-    this.searchApts = this.searchApts.bind(this);
-    this.updateInfo = this.updateInfo.bind(this);
-
-  }
-
-  componentDidMount(){
-    fetch('./data.json')
-      .then(response => response.json())
-      .then(result => {
-        const apts = result.map(item => {
-          item.aptId = this.state.lastIndex;
-          this.setState({lastIndex: this.state.lastIndex + 1})
-          return item;
-        })
-        this.setState({
-          myAppointments: apts
-        },() => console.log(this.state.myAppointments));
-      })
-
-
-  }
-
-  toggleForm(){
-    // const newState = {...this.state};
-    // newState.formDisplay = !newState.formDisplay;
-    // this.setState(newState);
-    this.setState({
-      formDisplay: !this.state.formDisplay
-    })
-  }
-
-  searchApts(query) {
-    this.setState({ 
-      queryText: query
-     });
-  } 
-  changeOrder(order, dir){
-    this.setState({
-      orderBy: order,
-      orderDir: dir
-    })
-  }
-
-  showRecord(petname) {
-    this.setState({
-      petNameRecord: petname.toLowerCase()
-    })
-  }
-
-  viewAll() {
-    this.setState({
-      petNameRecord: ""
-    })
-    
-  }
-
-updateInfo(name, value, id) {
-  const newState = {...this.state}
-  let obj = this.state.myAppointments.find(elem => elem.aptId === id);
-  let aptIndex = this.state.myAppointments.indexOf(obj);
-  console.log(aptIndex)
-  newState.myAppointments[aptIndex][name] = value;
-  console.log(obj[name])
-  this.setState(newState)
-  }
-
-//USING LODASH
-//   updateInfo(name, value, id) {
-// let tempApts = this.state.myAppointments;
-// let aptIndex = findIndex(this.state.myAppointments, {
-//   aptId: id
-// });
-
-// tempApts[aptIndex][name] = value;
-// this.setState({
-//   myAppointments: tempApts
-// })
-
-
-//   }
-  addAppointment(apt){
-    let tempApts = this.state.myAppointments;
-    apt.aptId = this.state.lastIndex;
-    tempApts.unshift(apt);
-
-    this.setState({
-      myAppointments: tempApts,
-      lastIndex: this.state.lastIndex + 1
-    })
-    console.log(apt.aptId);
-    console.log(tempApts);
-  }
-  //USING LODASH
-  // deleteAppointment(apt){
-  //   let tempApts = this.state.myAppointments;
-  //   tempApts = without(tempApts, apt);
-  //   console.log(tempApts)
-  //   this.setState({
-  //     myAppointments: tempApts
-  //   });
-  // }
-
-  // USING FILTER AND ID
-  deleteAppointment = (id)=>{
-// console.log(id)
-// alert(id);
-    console.log(this.state.myAppointments);
-    console.log(id, "ID")
-    let updatedApts = this.state.myAppointments.filter(apt => apt.aptId !== id);
-    console.log(updatedApts);
-    this.setState({
-      myAppointments: updatedApts
+let isMounted = false;
+const App = () => {
+    // myAppointments: [],
+    //   lastIndex: 1,
+    //   orderBy: 'petName',
+    //   orderDir: 'asc',
+    //   formDisplay: false,
+    //   petNameRecord:"",
+    //   queryText:""
+    const [mount, setMount] = useState(false);
+    const [stateAppointments, setStateAppointments] = useState({myAppointments:[]});
+    const [stateIndex, setStateIndex] = useState({
+        lastIndex: 1
     });
+    const [orderBy, setOrderBy] = useState('petName');
+    const [orderDir, setOrderDir] = useState('asc');
+    const [formDisplay, setFormDisplay] = useState(false);
+    const [petNameRecord, setPetNameRecord] = useState("");
+    const [queryText, setQueryText]= useState("");
 
-  }
+    // const [data,setData]=useState([]);
+    // componentDidMount(){
+    //     fetch('./data.json')
+    //       .then(response => response.json())
+    //       .then(result => {
+    //         const apts = result.map(item => {
+    //           item.aptId = this.state.lastIndex;
+    //           this.setState({lastIndex: this.state.lastIndex + 1})
+    //           return item;
+    //         })
+    //         this.setState({
+    //           myAppointments: apts
+    //         },() => console.log(this.state.myAppointments));
+    //       })
+    
+    
+    //   }
+    
+    useEffect(() => {
+        isMounted = true;
+        if (!mount) {
+          setMount(!mount);
+          if (isMounted) {
+            const newData = [...data]
+    const apts = newData.map((item, index)=> {
+      item.aptId = index+1;
+      console.log("idNumber", item.aptId)
+      setStateIndex({lastIndex: item.aptId})
+      return item;
+    })
 
-  render(){
+    setStateAppointments({myAppointments:apts});
+
+            // const apts = data.map(item => {
+            //     item.aptId = stateIndex.lastIndex;
+            //     setStateIndex({lastIndex: stateIndex.lastIndex + 1
+            //   })
+            //     return item;
+            //   })
+            //   setStateAppointments({myAppointments:apts});
+          }
+        }
+        return () => {
+          isMounted = false;
+        };
+      }, [mount, stateIndex.lastIndex]);
+
+      const toggleForm = () =>{
+        setFormDisplay(!formDisplay);
+      }
+
+      const searchApts = (query) =>{
+        setQueryText(query);
+      }
+      const changeOrder = (order, dir)=>{
+        setOrderBy(order);
+        setOrderDir(dir);
+      }
+    
+      const showRecord= (petname) => {
+        setPetNameRecord(petname? petname.toLowerCase() : '')
+      }
+    
+      const viewAll = () => {
+        setPetNameRecord("")
+      }
+    
+    const updateInfo = (name, value, id) => {
+      const newState = {...stateAppointments}
+      let obj = stateAppointments.myAppointments.find(elem => elem.aptId === id);
+      let aptIndex = stateAppointments.myAppointments.indexOf(obj);
+      console.log(aptIndex)
+      newState.myAppointments[aptIndex][name] = value;
+      console.log(obj[name])
+      setStateAppointments(newState);
+      }
+    
+    
+      const addAppointment = (apt) =>{
+        let tempApts = stateAppointments.myAppointments;
+        apt.aptId = stateIndex.lastIndex+1;
+        tempApts.unshift(apt);
+    
+        setStateAppointments({
+          myAppointments: tempApts
+        })
+
+        setStateIndex({
+            lastIndex: stateIndex.lastIndex + 1
+          })
+        console.log(apt.aptId);
+        console.log(tempApts);
+      }
+     
+    
+      // USING FILTER AND ID
+      const deleteAppointment = (id)=>{
+        console.log(stateAppointments.myAppointments);
+        console.log(id, "ID")
+        let updatedApts = stateAppointments.myAppointments.filter(apt => apt.aptId !== id);
+        console.log(updatedApts);
+        setStateAppointments({
+          myAppointments: updatedApts
+        });
+    
+      } 
 
     let order;
-    let filteredApts = this.state.myAppointments;
+    let filteredApts = stateAppointments.myAppointments;
     let viewAllbtn=""
+    const noFilteredApts =
+    !filteredApts || (filteredApts && filteredApts.length === 0);
 
-    if(this.state.petNameRecord !=="") {
-      filteredApts = filteredApts.filter(item => item.petName.toLowerCase() === this.state.petNameRecord);
-      if (this.state.orderDir === 'asc') {
+    if(petNameRecord !=="" && !noFilteredApts) {
+      filteredApts = filteredApts.filter(item => item.petName.toLowerCase() === petNameRecord);
+      if (orderDir === 'asc') {
         order = 1;
       } else {
         order = -1;
@@ -158,8 +149,8 @@ updateInfo(name, value, id) {
       filteredApts = filteredApts
         .sort((a, b) => {
           if (
-            a[this.state.orderBy].toLowerCase() <
-            b[this.state.orderBy].toLowerCase()
+            a[orderBy].toLowerCase() <
+            b[orderBy].toLowerCase()
           ) {
             return -1 * order;
           } else {
@@ -170,19 +161,19 @@ updateInfo(name, value, id) {
           return (
             eachItem['petName']
               .toLowerCase()
-              .includes(this.state.queryText.toLowerCase()) ||
+              .includes(queryText.toLowerCase()) ||
             eachItem['ownerName']
               .toLowerCase()
-              .includes(this.state.queryText.toLowerCase()) ||
+              .includes(queryText.toLowerCase()) ||
             eachItem['aptNotes']
               .toLowerCase()
-              .includes(this.state.queryText.toLowerCase())
+              .includes(queryText.toLowerCase())
           );
         });
-      viewAllbtn = <button onClick={()=>this.viewAll()}><span className="label-item">View All Records </span></button>
+      viewAllbtn = <button onClick={()=>viewAll()}><span className="label-item">View All Records </span></button>
     } else {
 
-      if (this.state.orderDir === 'asc') {
+      if (orderDir === 'asc' && !noFilteredApts) {
         order = 1;
       } else {
         order = -1;
@@ -191,8 +182,8 @@ updateInfo(name, value, id) {
       filteredApts = filteredApts
         .sort((a, b) => {
           if (
-            a[this.state.orderBy].toLowerCase() <
-            b[this.state.orderBy].toLowerCase()
+            a[orderBy].toLowerCase() <
+            b[orderBy].toLowerCase()
           ) {
             return -1 * order;
           } else {
@@ -203,82 +194,49 @@ updateInfo(name, value, id) {
           return (
             eachItem['petName']
               .toLowerCase()
-              .includes(this.state.queryText.toLowerCase()) ||
+              .includes(queryText.toLowerCase()) ||
             eachItem['ownerName']
               .toLowerCase()
-              .includes(this.state.queryText.toLowerCase()) ||
+              .includes(queryText.toLowerCase()) ||
             eachItem['aptNotes']
               .toLowerCase()
-              .includes(this.state.queryText.toLowerCase())
+              .includes(queryText.toLowerCase())
           );
         });
-    // filteredApts = this.state.myAppointments;
     }
-// function sortList (orderDir, order, filteredAptsArr, orderBy) {
-  
-//   if(orderDir === "asc") {
-//     order = 1;
-//   } else {
-//     order = -1;
-//   }
 
-//   filteredAptsArr.sort((a,b) => {
-//     if(a[orderBy].toLowerCase() < b[orderBy].toLowerCase()){
-//       return -1 * order
-//     } else {
-//       return 1 * order
-//     }
-//   })
-// }
-   
-    // if(this.state.orderDir === "asc") {
-    //   order = 1;
-    // } else {
-    //   order = -1;
-    // }
-    // newFiltered.sort((a,b) => {
-    //   if(a[this.state.orderBy].toLowerCase() < b[this.state.orderBy].toLowerCase()){
-    //     return -1 * order
-    //   } else {
-    //     return 1 * order
-    //   }
-    // });
-
-    return (
-      <main basename={process.env.PUBLIC_URL} className="page bg-white" id="petratings">
+  return (
+    <main basename={process.env.PUBLIC_URL} className="page bg-white" id="petratings">
+    <div className="container">
+      <div className="row">
+        <div className="col-md-12 bg-white">
           <div className="container">
-            <div className="row">
-              <div className="col-md-12 bg-white">
-                <div className="container">
-      <h1>Pet Sessions</h1>
-                   <AddAppointments
-                    formDisplay={this.state.formDisplay}
-                    toggleForm={this.toggleForm}
-                    addAppointment={this.addAppointment}
-                  /> 
-
-                   <SearchAppointments
-                    orderBy={this.state.orderBy}
-                    orderDir={this.state.orderDir}
-                    changeOrder={this.changeOrder}
-                    searchApts={this.searchApts}
-                  />
-                  {viewAllbtn}
-                  <ListAppointments
-                    appointments={filteredApts}
-                    showRecord={this.showRecord}
-                    deleteAppointment={this.deleteAppointment}
-                    petNameRecord={this.state.petNameRecord}
-                    updateInfo={this.updateInfo}
-                  /> 
-                </div>
-              </div>
-            </div>
+<h1>Pet Sessions</h1>
+             <AddAppointments
+              formDisplay={formDisplay}
+              toggleForm={toggleForm}
+              addAppointment={addAppointment}
+            /> 
+             <SearchAppointments
+              orderBy={orderBy}
+              orderDir={orderDir}
+              changeOrder={changeOrder}
+              searchApts={searchApts}
+            />
+            {viewAllbtn}
+            <ListAppointments
+              appointments={filteredApts}
+              showRecord={showRecord}
+              deleteAppointment={deleteAppointment}
+              petNameRecord={petNameRecord}
+              updateInfo={updateInfo}
+            /> 
           </div>
-        </main>
-    );
-  }
- 
+        </div>
+      </div>
+    </div>
+  </main>
+  )
 }
 
-export default App;
+export default App
