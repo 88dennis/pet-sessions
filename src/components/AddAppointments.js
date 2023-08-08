@@ -18,13 +18,17 @@ class AddAppointments extends Component {
 
   handleAdd(e) {
     e.preventDefault();
+    console.log(new Date(this.state.aptDate).getTime())
+    console.log(Date.now())
+    console.log(new Date().toISOString().slice(0, 10))
+    console.log(new Date())
+    console.log(new Date().toDateString())
     let tempApt = {
       petName: this.state.petName,
       ownerName: this.state.ownerName,
-      aptDate: this.state.aptDate + ' ' + this.state.aptTime,
+      aptDate: this.state.aptDate ? new Date(this.state.aptDate).getTime() : new Date().toDateString()+ ' ' + this.state.aptTime,
       aptNotes: this.state.aptNotes
     };
-
     this.props.addAppointment(tempApt);
     
     this.setState({
@@ -47,12 +51,9 @@ class AddAppointments extends Component {
   }
 
   render() {
-
-
     let plusSign = <FaPlus /> 
     let minusSign = <FaMinus /> 
     let tabSign = this.props.formDisplay ? minusSign : plusSign;
- 
     return (
       <div
         className={

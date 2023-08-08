@@ -3,7 +3,24 @@ import {FaTimes} from 'react-icons/fa';
 import Moment from 'react-moment';
 
 class ListAppointments extends Component {
+  
+  convertDate(timestamp){
+    // const timestamp = 1616608200000; // example timestamp
+const date = new Date(timestamp);
+// console.log(date.getFullYear()); // prints the year (e.g. 2021)
+// console.log(date.getMonth()); // prints the month (0-11, where 0 = January)
+// console.log(date.getDate()); // prints the day of the month (1-31)
+// console.log(date.getHours()); // prints the hour (0-23)
+// console.log(date.getMinutes()); // prints the minute (0-59)
+// console.log(date.getSeconds()); // prints the second (0-59)
+
+return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) + ", "+ date.toDateString();
+
+// return date.getHours() + ":" + date.getMinutes() + ", "+ date.toDateString();
+
+  }
     render() {
+      
         return (
           <div className="appointment-list item-list mb-3">
             {this.props.appointments.map((item, index) => (
@@ -36,11 +53,13 @@ class ListAppointments extends Component {
                       {item.petName}
                     </span>
                     <span className="apt-date ml-auto">
-                      <Moment
+                      {/* <Moment
                         date={item.aptDate}
                         parse="YYYY-MM-dd hh:mm"
                         format="MMM-d h:mma"
-                      />
+                      /> */}
+                      {/* {new Date(item.aptDate).getTime()} */}
+                      {this.convertDate(new Date(item.aptDate).getTime())}
                     </span>
                   </div>
     
