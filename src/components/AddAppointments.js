@@ -23,10 +23,33 @@ class AddAppointments extends Component {
     console.log(new Date().toISOString().slice(0, 10))
     console.log(new Date())
     console.log(new Date().toDateString())
+
+let hms = this.state.aptTime;
+const [hours, minutes] = hms.split(':');
+const totalSeconds = (+hours) * 60 * 60 + (+minutes) * 60;
+const totalMilSec = totalSeconds*1000;
+console.log("milSec", totalMilSec);
+
+
+
+    let aptDateToLog;
+
+    if(!this.state.aptDate && !this.state.aptTime){
+      aptDateToLog = new Date().toISOString().slice(0, 10) + " 14:00";
+    } else if(this.state.aptDate && !this.state.aptTime) {
+      // aptDateToLog = new Date(this.state.aptDate);
+      aptDateToLog = this.state.aptDate + " 14:00";
+    } else if(this.state.aptDate && this.state.aptTime){
+      aptDateToLog = this.state.aptDate + " " + this.state.aptTime;
+      console.log("*******", this.state.aptDate + " " + this.state.aptTime)
+    } else if(!this.state.aptDate && this.state.aptTime){
+      aptDateToLog = new Date().toISOString().slice(0, 10) + " " + this.state.aptTime
+    }
     let tempApt = {
       petName: this.state.petName,
       ownerName: this.state.ownerName,
-      aptDate: this.state.aptDate ? new Date(this.state.aptDate).getTime() : new Date().toDateString()+ ' ' + this.state.aptTime,
+      // aptDate: this.state.aptDate ? new Date(this.state.aptDate).getTime() : new Date().toDateString() + ' ' + this.state.aptTime,
+      aptDate:aptDateToLog,
       aptNotes: this.state.aptNotes
     };
     this.props.addAppointment(tempApt);
