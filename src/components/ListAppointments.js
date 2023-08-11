@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaTimes } from "react-icons/fa";
-import Moment from "react-moment";
 
 const ListAppointments = (props) => {
   const convertDate = (timestamp) => {
@@ -35,22 +34,12 @@ const ListAppointments = (props) => {
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) =>
-                  props.updateInfo(
-                    "petName",
-                    e.target.innerText,
-                    item.aptId
-                  )
+                  props.updateInfo("petName", e.target.innerText, item.aptId)
                 }
               >
-                {/* {item.aptId}-- */}
                 {item.petName}
               </span>
               <span className="apt-date ml-auto">
-                {/* <Moment
-                        date={item.aptDate}
-                        parse="YYYY-MM-dd hh:mm"
-                        format="MMM-d h:mma"
-                      /> */}
                 {convertDate(new Date(item.aptDate).getTime())}
               </span>
             </div>
@@ -71,11 +60,7 @@ const ListAppointments = (props) => {
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) =>
-                  props.updateInfo(
-                    "ownerName",
-                    e.target.innerText,
-                    item.aptId
-                  )
+                  props.updateInfo("ownerName", e.target.innerText, item.aptId)
                 }
               >
                 {item.ownerName}
@@ -86,11 +71,7 @@ const ListAppointments = (props) => {
               contentEditable
               suppressContentEditableWarning
               onBlur={(e) =>
-                props.updateInfo(
-                  "aptNotes",
-                  e.target.innerText,
-                  item.aptId
-                )
+                props.updateInfo("aptNotes", e.target.innerText, item.aptId)
               }
             >
               {item.aptNotes}
@@ -103,4 +84,3 @@ const ListAppointments = (props) => {
 };
 
 export default ListAppointments;
-
