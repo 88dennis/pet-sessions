@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaMinus } from "react-icons/fa";
 
-const AddAppointments = (props) => {
+const AddItems = (props) => {
   const [state, setState] = useState({
     petName: "",
     ownerName: "",
@@ -33,7 +33,7 @@ const AddAppointments = (props) => {
       aptDate: aptDateToLog,
       aptNotes: state.aptNotes,
     };
-    props.addAppointment(tempApt);
+    props.addItem(tempApt);
 
     setState({
       petName: "",
@@ -180,4 +180,4 @@ const AddAppointments = (props) => {
   );
 };
 
-export default AddAppointments;
+export default AddItems;

@@ -1,7 +1,7 @@
 
 import React from 'react'
 
-const SearchAppointments = (props) => {
+const SearchItems = (props) => {
   return (
     <div className="search-appointments row justify-content-center my-4">
       <div className="col-md-6">
@@ -11,7 +11,7 @@ const SearchAppointments = (props) => {
             type="text"
             className="form-control"
             aria-label="Search Appointments"
-            onChange={e => props.searchApts(e.target.value)}
+            onChange={e => props.searchItems(e.target.value)}
           />
           <div className="input-group-append">
             <button
@@ -95,4 +95,4 @@ const SearchAppointments = (props) => {
   )
 }
 
-export default SearchAppointments
+export default SearchItems

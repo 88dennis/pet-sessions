@@ -1,7 +1,7 @@
 import React from "react";
 import { FaTimes } from "react-icons/fa";
 
-const ListAppointments = (props) => {
+const ListItems = (props) => {
   const convertDate = (timestamp) => {
     const date = new Date(timestamp);
     return (
@@ -16,12 +16,12 @@ const ListAppointments = (props) => {
   };
   return (
     <div className="appointment-list item-list mb-3">
-      {props.appointments.map((item, index) => (
+      {props.filteredItems.map((item, index) => (
         <div className="pet-item col media py-3" key={item.aptId}>
           <div className="mr-3">
             <button
               className="pet-delete btn btn-sm btn-danger"
-              onClick={() => props.deleteAppointment(item.aptId)}
+              onClick={() => props.deleteItem(item.aptId)}
             >
               <FaTimes />
             </button>
@@ -44,7 +44,7 @@ const ListAppointments = (props) => {
               </span>
             </div>
             <div className="owner-name">
-              {props.petNameRecord === "" ? (
+              {props.nameOnRecord === "" ? (
                 <button onClick={() => props.showRecord(item.petName)}>
                   <span className="label-item">
                     Show all records of {item.petName}{" "}
@@ -83,4 +83,4 @@ const ListAppointments = (props) => {
   );
 };
 
-export default ListAppointments;
+export default ListItems;

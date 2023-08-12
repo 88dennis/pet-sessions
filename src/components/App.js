@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from "react";
 import "../css/App.css";
-import AddAppointments from "./AddAppointments";
-import ListAppointments from "./ListAppointments";
-import SearchAppointments from "./SearchAppointments";
+
+import AddItems from "./AddItems";
+import ListItems from "./ListItems";
+import SearchItems from "./SearchItems";
 import data from "../data.json";
 
 let isMounted = false;
+// let data = [];
 const App = () => {
   const [mount, setMount] = useState(false);
-  const [stateAppointments, setStateAppointments] = useState({
-    myAppointments: [],
+  const [stateItems, setStateItems] = useState({
+    myItems: [],
   });
+  
   const [stateIndex, setStateIndex] = useState({
     lastIndex: 1,
   });
   const [orderBy, setOrderBy] = useState("petName");
   const [orderDir, setOrderDir] = useState("asc");
   const [formDisplay, setFormDisplay] = useState(false);
-  const [petNameRecord, setPetNameRecord] = useState("");
+  const [nameOnRecord, setNameOnRecord] = useState("");
+
   const [queryText, setQueryText] = useState("");
 
   useEffect(() => {
@@ -25,14 +29,16 @@ const App = () => {
     if (!mount) {
       setMount(!mount);
       if (isMounted) {
-        const newData = [...data];
-        const apts = newData.map((item, index) => {
-          item.aptId = index + 1;
-          setStateIndex({ lastIndex: item.aptId });
-          return item;
-        });
 
-        setStateAppointments({ myAppointments: apts });
+        if(data && data.length !== 0){
+          const newData = [...data];
+          const apts = newData.map((item, index) => {
+            item.aptId = index + 1;
+            setStateIndex({ lastIndex: item.aptId });
+            return item;
+          });
+          setStateItems({ myItems: apts });
+        }
       }
     }
     return () => {
@@ -44,7 +50,7 @@ const App = () => {
     setFormDisplay(!formDisplay);
   };
 
-  const searchApts = (query) => {
+  const searchItems = (query) => {
     setQueryText(query);
   };
   const changeOrder = (order, dir) => {
@@ -52,31 +58,31 @@ const App = () => {
     setOrderDir(dir);
   };
 
-  const showRecord = (petname) => {
-    setPetNameRecord(petname ? petname.toLowerCase() : "");
+  const showRecord = (recordName) => {
+    setNameOnRecord(recordName ? recordName.toLowerCase() : "");
   };
 
   const viewAll = () => {
-    setPetNameRecord("");
+    setNameOnRecord("");
   };
 
   const updateInfo = (name, value, id) => {
-    const newState = { ...stateAppointments };
-    let obj = stateAppointments.myAppointments.find(
+    const newState = { ...stateItems };
+    let obj = stateItems.myItems.find(
       (elem) => elem.aptId === id
     );
-    let aptIndex = stateAppointments.myAppointments.indexOf(obj);
-    newState.myAppointments[aptIndex][name] = value;
-    setStateAppointments(newState);
+    let aptIndex = stateItems.myItems.indexOf(obj);
+    newState.myItems[aptIndex][name] = value;
+    setStateItems(newState);
   };
 
-  const addAppointment = (apt) => {
-    let tempApts = stateAppointments.myAppointments;
+  const addItem = (apt) => {
+    let tempApts = stateItems.myItems;
     apt.aptId = stateIndex.lastIndex + 1;
     tempApts.unshift(apt);
 
-    setStateAppointments({
-      myAppointments: tempApts,
+    setStateItems({
+      myItems: tempApts,
     });
 
     setStateIndex({
@@ -85,24 +91,24 @@ const App = () => {
   };
 
   // USING FILTER AND ID
-  const deleteAppointment = (id) => {
-    let updatedApts = stateAppointments.myAppointments.filter(
+  const deleteItem = (id) => {
+    let updatedApts = stateItems.myItems.filter(
       (apt) => apt.aptId !== id
     );
-    setStateAppointments({
-      myAppointments: updatedApts,
+    setStateItems({
+      myItems: updatedApts,
     });
   };
 
   let order;
-  let filteredApts = stateAppointments.myAppointments;
+  let filteredItems = stateItems.myItems;
   let viewAllbtn = "";
-  const noFilteredApts =
-    !filteredApts || (filteredApts && filteredApts.length === 0);
+  const noFilteredItems =
+    !filteredItems || (filteredItems && filteredItems.length === 0);
 
-  if (petNameRecord !== "" && !noFilteredApts) {
-    filteredApts = filteredApts.filter(
-      (item) => item.petName.toLowerCase() === petNameRecord
+  if (nameOnRecord !== "" && !noFilteredItems) {
+    filteredItems = filteredItems.filter(
+      (item) => item.petName.toLowerCase() === nameOnRecord
     );
     if (orderDir === "asc") {
       order = 1;
@@ -110,7 +116,7 @@ const App = () => {
       order = -1;
     }
 
-    filteredApts = filteredApts
+    filteredItems = filteredItems
       .sort((a, b) => {
         if (a[orderBy].toLowerCase() < b[orderBy].toLowerCase()) {
           return -1 * order;
@@ -133,13 +139,13 @@ const App = () => {
       </button>
     );
   } else {
-    if (orderDir === "asc" && !noFilteredApts) {
+    if (orderDir === "asc" && !noFilteredItems) {
       order = 1;
     } else {
       order = -1;
     }
 
-    filteredApts = filteredApts
+    filteredItems = filteredItems
       .sort((a, b) => {
         if (a[orderBy].toLowerCase() < b[orderBy].toLowerCase()) {
           return -1 * order;
@@ -169,23 +175,23 @@ const App = () => {
           <div className="col-md-12 bg-white">
             <div className="container">
               <h1>Pet Sessions</h1>
-              <AddAppointments
+              <AddItems
                 formDisplay={formDisplay}
                 toggleForm={toggleForm}
-                addAppointment={addAppointment}
+                addItem={addItem}
               />
-              <SearchAppointments
+              <SearchItems
                 orderBy={orderBy}
                 orderDir={orderDir}
                 changeOrder={changeOrder}
-                searchApts={searchApts}
+                searchItems={searchItems}
               />
               {viewAllbtn}
-              <ListAppointments
-                appointments={filteredApts}
+              <ListItems
+                filteredItems={filteredItems}
                 showRecord={showRecord}
-                deleteAppointment={deleteAppointment}
-                petNameRecord={petNameRecord}
+                deleteItem={deleteItem}
+                nameOnRecord={nameOnRecord}
                 updateInfo={updateInfo}
               />
             </div>
